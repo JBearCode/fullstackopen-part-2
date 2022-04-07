@@ -1,33 +1,60 @@
 const App = () => {
-  const course = {
-    id: 1,
-    name: 'Half Stack Application Development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1,
-      }, 
-      {
-        name: 'Using Props to Pass Data',
-        exercises: 7,
-        id: 2,
-      }, 
-      {
-        name: 'State of a Component',
-        exercises: 14,
-        id: 3,
-      },
-      {
-        name: 'The Great Unknown',
-        exercises: 38,
-        id: 4,
-      }
-    ] 
-  }
+  const courses = [
+    {
+      name: 'Half Stack Application Development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
   
+  let copiedArray = [...courses];
+
   return (
-  <Course course={course}/>
+    <div>
+    <h1>Web Development Curriculum</h1>
+      {copiedArray.map((course) =>
+        <div key={course.id}>
+          <Course course={course}/>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -44,7 +71,7 @@ const Course = (props) => {
 const Header = (props) => {
   return (
   <>
-    <h1>{props.course.name}</h1>
+    <h2>{props.course.name}</h2>
   </>
   )
 }
