@@ -9,14 +9,19 @@ const App = () => {
         id: 1,
       }, 
       {
-        name: 'Using props to pass data',
+        name: 'Using Props to Pass Data',
         exercises: 7,
         id: 2,
       }, 
       {
-        name: 'State of a component',
+        name: 'State of a Component',
         exercises: 14,
         id: 3,
+      },
+      {
+        name: 'The Great Unknown',
+        exercises: 38,
+        id: 4,
       }
     ] 
   }
@@ -27,7 +32,6 @@ const App = () => {
 }
 
 const Course = (props) => {
-  console.log(props.course);
   return (
   <div>
   <Header course={props.course}/>
@@ -45,15 +49,29 @@ const Header = (props) => {
   )
 }
 
-const Content = (props) => {
+const Content = ({course}) => {
+  let newArray = [...course.parts];
+  console.log(newArray);
   return (
     <>
-      <Part part={props.course.parts[0].name} exercise={props.course.parts[0].exercises}/>
-      <Part part={props.course.parts[1].name} exercise={props.course.parts[1].exercises}/>
-      <Part part={props.course.parts[2].name} exercise={props.course.parts[2].exercises}/>
+      <div>
+        {newArray.map(part =>
+          <div key={part.id}>
+          <Part id={part.id} part={part.name} exercise={part.exercises} />
+          </div>
+        )}
+      </div>
     </>
     )
 }
+
+/* Mapping directly without using Part Component
+       <div>
+        {newArray.map(part =>
+           <p key={part.id}>{part.name} {part.exercises}</p>
+        )}
+      </div>
+*/
 
 const Part = (props) => {
   return (
@@ -66,12 +84,13 @@ const Part = (props) => {
 }
 
 const Total = (props) => {
+  const sumOfArray = [...props.course.parts]
+    .map(item => item.exercises)
+    .reduce((a, b) => a + b, 0)
+
   return (
     <>
-      <p>Number of exercises {props.course.parts[0].exercises +
-                              props.course.parts[1].exercises +
-                              props.course.parts[2].exercises}
-      </p>
+      <p>Total of {sumOfArray} Exercises</p>
     </>
     )
 }
