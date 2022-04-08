@@ -41,13 +41,13 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
-  const handleFilterChange = (event) => {
-    setFilterBy(event.target.value);
-    console.log(event.target.value);
-    if (!event.target.value) {
+  const handleFilterChange = (value) => {
+    setFilterBy(value);
+    console.log(value);
+    if (!value) {
       setPersonsToDisplay(persons)
     } else {
-    setPersonsToDisplay(persons.filter(person =>
+      setPersonsToDisplay(persons.filter(person =>
       person.name.toLowerCase().includes(filterBy.toLowerCase()) === true
     ));}
   }
@@ -55,22 +55,49 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <div>filter contacts: <input 
-          type="text" value={filterBy} onChange={handleFilterChange}
-        /></div>
+      <Filter filterBy={filterBy} onChange={handleFilterChange}/>
       <h2>Add Contact</h2>
-      <form onSubmit={addPerson}>
-        <div>name: <input type="text" value={newName} onChange={handleNameChange}/></div>
-        <div>number: <input type="number" value={newNumber} onChange={handleNumberChange}/></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {personsToDisplay.map((person) => 
-        <p key={person.id}>{person.name} {person.number}</p>
-      )}
+      <Form newName={newName} 
+            handleNameChange={handleNameChange}
+            newNumber={newNumber}
+            handleNumberChange={handleNumberChange}
+            addPerson={addPerson}
+      />
+      <Numbers personsToDisplay={personsToDisplay}/>
     </div>
+  )
+}
+
+const Numbers = ({personsToDisplay}) => {
+  return (
+    <div>
+    <h2>Numbers</h2>
+    {personsToDisplay.map((person) => 
+      <p key={person.id}>{person.name} {person.number}</p>
+    )}
+    </div>
+  )
+}
+
+const Form = (props) => {
+  return (
+    <form onSubmit={props.addPerson}>
+        <div>Name: <input type="text" value={props.newName} onChange={props.handleNameChange}/></div>
+        <div>Number: <input type="number" value={props.newNumber} onChange={props.handleNumberChange}/></div>
+        <div>
+        <button type="submit">Add</button>
+        </div>
+    </form>
+  )
+}
+
+const Filter = ({filterBy, onChange}) => {
+  return (
+    <div>Filter Contacts: <input 
+      type="text" 
+      value={filterBy} 
+      onChange={(e) => onChange(e.target.value)}
+    /></div>
   )
 }
 
