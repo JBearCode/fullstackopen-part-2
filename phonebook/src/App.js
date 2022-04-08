@@ -6,14 +6,21 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
 
+  const checkForDuplicate = (name) => persons.map(ob => ob.name).includes(name)
+
   const addNumber = (event) => {
     event.preventDefault()
     const numberObject = {
       name: newName,
       id: persons.length,
     }
-    setPersons(persons.concat(numberObject))
-    setNewName('');
+    if (checkForDuplicate(numberObject.name)) {
+      alert(`${numberObject.name} is already in the phonebook!`)
+      setNewName('');
+    } else {
+      setPersons(persons.concat(numberObject))
+      setNewName('');
+    }
   }
 
   const handleInputChange = (event) => {
