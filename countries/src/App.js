@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import axios from 'axios'
 
 const App = () => {
@@ -43,18 +43,23 @@ const App = () => {
     populateCountryNames();
   },[countries])
 
+  const wrapperSetFiltered = useCallback(val => {
+    setFiltered(val)
+  }, [setFiltered])
+
   return (
     <div className="App">
       <h1>Know Your Nations</h1>
       <Search searchText={searchText} onChange={handleFilterChange} />
-      <Information filteredCountries={filteredCountries} countries={countries} />
+      <Information filteredCountries={filteredCountries} countries={countries}
+      wrapperSetFiltered={wrapperSetFiltered} />
     </div>
   );
 }
 
 const Search = ({searchText, onChange}) => {
   return (
-    <div>Filter Countries: <input 
+    <div>Enter Country Name: <input 
       type="text" 
       value={searchText} 
       onChange={(e) => onChange(e.target.value)}
@@ -62,9 +67,21 @@ const Search = ({searchText, onChange}) => {
   )
 }
 
-const Information = ({filteredCountries, countries}) => {
+const Information = ({filteredCountries, countries, wrapperSetFiltered}) => {
   let length = filteredCountries.length;
   console.log("filtered countries arriving in Information component", length);
+
+  const childRef = useRef();
+  const [childState, setChildState] = useState([]);
+
+  useEffect(() => {
+    wrapperSetFiltered(childState)
+  }, [wrapperSetFiltered, childState])
+
+  const showDetails = (country) => {
+    console.log(country.country);
+    setChildState([country.country]);
+  }
 
   if (length === 0) {
     return (
@@ -78,61 +95,22 @@ const Information = ({filteredCountries, countries}) => {
       countries={countries}
       filteredCountry={filteredCountries[0]}
     />)
-    /*
-    console.log("full info on one country", countries)
-    let countryInfo = countries.filter(country =>
-     country.name.common === filteredCountries[0]
-     )
-    console.log("country info", countryInfo);
-    return (
-    <div>
-      <h2>{filteredCountries[0]} {countryInfo[0].flag}</h2>
-      <img src={countryInfo[0].flags.png} alt="flag image" width="250"/>
-      <p>Official Name: {countryInfo[0].name.official}</p>
-      <p>Capital City: {countryInfo[0].capital[0]}</p>
-      <p>Languages: <ul>{Object.values(countryInfo[0].languages).map(lang =>
-          <li>{lang}</li>
-        )}</ul></p>
-      <p>Region: {countryInfo[0].subregion || countryInfo[0].region}</p>
-      <p>Population: {countryInfo[0].population.toLocaleString('en-US')}</p>
-      <p>{filteredCountries[0]} is {countryInfo[0].independent ? "independent" : "not independent"
-      } and {countryInfo[0].landlocked ? "is landlocked" : "is not landlocked"
-      }. It {countryInfo[0].unMember ? "is" : "is not"} a member of the United Nations.
-      </p>
-      <p>Coat of Arms:</p>
-      <img src={countryInfo[0].coatOfArms.png} alt="coat of arms" width="250"/>
-      </div>
-      )
-      */
   } else if (length > 10) {
     return (
       <div>
         <p>Please narrow your search. That's too many countries!</p>
       </div>
       )
-  } else
-  return (
-      <ResultsWithButtons 
-        filteredCountries={filteredCountries}
-        countries={countries}
-        />
-    )
-}
-
-const ResultsWithButtons = ({filteredCountries, countries}) => {
-  const showDetails = (country) => {
-    console.log(country.country);
-  }
-  return (
-  <div>
-  {filteredCountries.map((country, i) =>
-    <div key={i}><p>{country} <button 
-      type="button"
-      onClick={() => showDetails({country})}
-    >Show Details</button></p></div>  
-  )}
-  </div>
-  )
+  } else return (
+      <div>
+      {filteredCountries.map((country, i) =>
+        <div key={i}><p>{country} <button 
+          type="button"
+          onClick={() => showDetails({country})}
+        >Show Details</button></p></div>  
+      )}
+      </div>
+      )
 }
 
 const ViewOneCountry = ({countries, filteredCountry}) => {
@@ -141,16 +119,15 @@ const ViewOneCountry = ({countries, filteredCountry}) => {
    country.name.common === filteredCountry
    )
   console.log("country info", countryInfo);
-
   return (
     <div>
       <h2>{filteredCountry} {countryInfo[0].flag}</h2>
       <img src={countryInfo[0].flags.png} alt="flag image" width="250"/>
       <p>Official Name: {countryInfo[0].name.official}</p>
       <p>Capital City: {countryInfo[0].capital[0]}</p>
-      <p>Languages: <ul>{Object.values(countryInfo[0].languages).map(lang =>
+      <div><p>Languages: </p><ul>{Object.values(countryInfo[0].languages).map(lang =>
           <li>{lang}</li>
-        )}</ul></p>
+        )}</ul></div>
       <p>Region: {countryInfo[0].subregion || countryInfo[0].region}</p>
       <p>Population: {countryInfo[0].population.toLocaleString('en-US')}</p>
       <p>{filteredCountry} is {countryInfo[0].independent ? "independent" : "not independent"
