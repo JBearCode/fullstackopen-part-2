@@ -4,16 +4,17 @@ import axios from 'axios'
 const App = () => {
   const [countries, setCountries] = useState([])
   const [names, setNames] = useState([])
-  const [filter, setFilter] = useState('');
+  const [searchText, setSearchText] = useState([])
   const [filteredCountries, setFiltered] = useState([])
 
   const handleFilterChange = (value) => {
-    setFilter(value);
+    console.log(value);
+    setSearchText(value)
     if (!value) {
       setFiltered(names);
     } else {
       setFiltered(names.filter(country =>
-        country.toLowerCase().includes(filter.toLowerCase())
+        country.toLowerCase().includes(value.toLowerCase())
       ))
     }
   }
@@ -29,12 +30,7 @@ const App = () => {
       .catch(error => console.log("Error from useEffect catch:", error))
   }, [])
 
-  useEffect(() => {
-    console.log("useEffect running because countries state changed");
-    populateCountryNames();
-  },[countries])
-
-  function populateCountryNames() {
+  const populateCountryNames = () => {
     const countryNames = countries.map(country =>
       country.name.common
     )
@@ -42,20 +38,25 @@ const App = () => {
     setFiltered(countryNames);
   }
 
+  useEffect(() => {
+    console.log("useEffect running because countries state changed");
+    populateCountryNames();
+  },[countries])
+
   return (
     <div className="App">
       <h1>Know Your Nations</h1>
-      <Search filterBy={filter} onChange={handleFilterChange} />
+      <Search searchText={searchText} onChange={handleFilterChange} />
       <Information filteredCountries={filteredCountries} countries={countries} />
     </div>
   );
 }
 
-const Search = ({filter, onChange}) => {
+const Search = ({searchText, onChange}) => {
   return (
     <div>Filter Countries: <input 
       type="text" 
-      value={filter} 
+      value={searchText} 
       onChange={(e) => onChange(e.target.value)}
     /></div>
   )
@@ -84,19 +85,20 @@ const Information = ({filteredCountries, countries}) => {
       <h2>{filteredCountries[0]} {countryInfo[0].flag}</h2>
       <img src={countryInfo[0].flags.png} alt="flag image" width="250"/>
       <p>Official Name: {countryInfo[0].name.official}</p>
+      <p>Capital City: {countryInfo[0].capital[0]}</p>
       <p>Languages: <ul>{Object.values(countryInfo[0].languages).map(lang =>
           <li>{lang}</li>
         )}</ul></p>
       <p>Region: {countryInfo[0].subregion || countryInfo[0].region}</p>
       <p>Population: {countryInfo[0].population.toLocaleString('en-US')}</p>
-      <p>Coat of Arms:</p>
-      <img src={countryInfo[0].coatOfArms.png} alt="coat of arms" width="250"/>
-      <p>Capital City: {countryInfo[0].capital[0]}</p>
       <p>{filteredCountries[0]} is {countryInfo[0].independent ? "independent" : "not independent"
       } and {countryInfo[0].landlocked ? "is landlocked" : "is not landlocked"
       }. It {countryInfo[0].unMember ? "is" : "is not"} a member of the United Nations.
-      
       </p>
+      <p>Coat of Arms:</p>
+      <img src={countryInfo[0].coatOfArms.png} alt="coat of arms" width="250"/>
+
+
       </div>
       )
   } else if (length > 10) {
@@ -109,7 +111,7 @@ const Information = ({filteredCountries, countries}) => {
   return (
       <div>
         {filteredCountries.map((country, i) =>
-          <p key={i}>{country}</p>  
+          <div key={i}>{country}<button type="button">Show Details</button></div>  
         )}
       </div>
     )
