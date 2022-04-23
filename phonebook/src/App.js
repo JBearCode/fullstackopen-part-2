@@ -64,10 +64,11 @@ const App = () => {
     ));}
   }
 
-  const handleDeleteClick = (id) => {
-    console.log(`ID ${id} must be deleted`)
+  const handleDeleteClick = (person) => {
+    console.log(`ID ${person.id} must be deleted`)
+    if (window.confirm(`Do you want to delete your contact ${person.name}?`))
     personsService
-      .deleteResource(id)
+      .deleteResource(person.id)
       .then(response => {
           personsService.getAll() 
           .then(response => {
@@ -102,7 +103,7 @@ const Numbers = ({personsToDisplay, handleDeleteClick}) => {
     {personsToDisplay.map((person) => 
     <div key={person.id}>
       <span>{person.name} {person.number}</span>
-      <button onClick={() => handleDeleteClick(person.id)}>Delete Contact</button>
+      <button onClick={() => handleDeleteClick(person)}>Delete Contact</button>
     </div>
     )}
     </div>
