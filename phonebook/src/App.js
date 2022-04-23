@@ -29,7 +29,15 @@ const App = () => {
       number: newNumber,
     }
     if (checkForDuplicate(numberObject.name)) {
-      alert(`${numberObject.name} is already in the phonebook!`)
+      if (window.confirm(`${numberObject.name} is already in the phonebook! Would you like to update their number?`)) {
+        const originalPerson = persons.find(p => p.name === numberObject.name)
+        personsService
+          .update(originalPerson.id, numberObject)
+          .then(response => {
+            setPersons(persons.map(p => p.id !== originalPerson.id ? p : response.data ))
+            setPersonsToDisplay(personsToDisplay.map(p => p.id !== originalPerson.id ? p : response.data ))
+          })
+      }
       setNewName('');
       setNewNumber('');
     } else {
