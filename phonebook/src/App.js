@@ -12,14 +12,6 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect begins')
-  /*
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-        setPersonsToDisplay(response.data)
-  */
     personsService
         .getAll()
         .then(response => {
@@ -41,14 +33,6 @@ const App = () => {
       setNewName('');
       setNewNumber('');
     } else {
-      /*
-      axios
-      .post('http://localhost:3001/persons', numberObject)
-      .then(response => {
-        console.log(response)
-        setPersonsToDisplay(persons.concat(response.data))
-        setPersons(persons.concat(response.data))
-      }) */
       personsService
         .create(numberObject)
         .then(response => {
@@ -80,6 +64,19 @@ const App = () => {
     ));}
   }
 
+  const handleDeleteClick = (id) => {
+    console.log(`ID ${id} must be deleted`)
+    personsService
+      .deleteResource(id)
+      .then(response => {
+          personsService.getAll() 
+          .then(response => {
+            setPersons(response.data)
+            setPersonsToDisplay(response.data)
+          })
+      })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -91,17 +88,22 @@ const App = () => {
             handleNumberChange={handleNumberChange}
             addPerson={addPerson}
       />
-      <Numbers personsToDisplay={personsToDisplay}/>
+      <Numbers personsToDisplay={personsToDisplay}
+               handleDeleteClick={handleDeleteClick}
+      />
     </div>
   )
 }
 
-const Numbers = ({personsToDisplay}) => {
+const Numbers = ({personsToDisplay, handleDeleteClick}) => {
   return (
     <div>
     <h2>Numbers</h2>
     {personsToDisplay.map((person) => 
-      <p key={person.id}>{person.name} {person.number}</p>
+    <div key={person.id}>
+      <span>{person.name} {person.number}</span>
+      <button onClick={() => handleDeleteClick(person.id)}>Delete Contact</button>
+    </div>
     )}
     </div>
   )

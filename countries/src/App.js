@@ -126,6 +126,7 @@ const ViewOneCountry = ({countries, filteredCountry}) => {
 
   // call weather API
   const weatherKey = process.env.REACT_APP_API_KEY;
+  
   useEffect(() => {
     console.log('calling weather API')
     axios

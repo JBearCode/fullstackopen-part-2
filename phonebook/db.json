@@ -19,31 +19,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "Bobby",
-      "number": "123666",
-      "id": 5
-    },
-    {
-      "name": "Billy",
-      "number": "123888",
-      "id": 6
-    },
-    {
-      "name": "Marty",
-      "number": "12887",
-      "id": 7
-    },
-    {
-      "name": "Bilbo",
-      "number": "777394",
-      "id": 8
-    },
-    {
-      "name": "Frodo",
-      "number": "2222222",
-      "id": 9
     }
   ]
 }
