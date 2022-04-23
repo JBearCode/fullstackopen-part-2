@@ -26,15 +26,21 @@ const App = () => {
     const numberObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     }
     if (checkForDuplicate(numberObject.name)) {
       alert(`${numberObject.name} is already in the phonebook!`)
       setNewName('');
       setNewNumber('');
     } else {
-      setPersonsToDisplay(persons.concat(numberObject));
-      setPersons(persons.concat(numberObject))
+
+      axios
+      .post('http://localhost:3001/persons', numberObject)
+      .then(response => {
+        console.log(response)
+        setPersonsToDisplay(persons.concat(response.data))
+        setPersons(persons.concat(response.data))
+      })
+
       setNewName('');
       setNewNumber('');
     }
