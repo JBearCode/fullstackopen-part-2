@@ -21,29 +21,9 @@
       "id": 4
     },
     {
-      "name": "billy",
-      "number": "444",
-      "id": 5
-    },
-    {
       "name": "bilbo",
-      "number": "222",
+      "number": "333",
       "id": 6
-    },
-    {
-      "name": "Jimbo",
-      "number": "234",
-      "id": 7
-    },
-    {
-      "name": "Jimbobby",
-      "number": "38374",
-      "id": 8
-    },
-    {
-      "name": "Jimbobobbilly",
-      "number": "349285",
-      "id": 9
     }
   ]
 }

@@ -5,10 +5,10 @@ import personsService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
+  const [personsToDisplay, setPersonsToDisplay] = useState(persons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterBy, setFilterBy] = useState('')
-  const [personsToDisplay, setPersonsToDisplay] = useState(persons)
   const [notificationText, setNotificationText] = useState(null)
   const [notificationColor, setNotificationColor] = useState('green')
 
@@ -38,12 +38,22 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(p => p.id !== originalPerson.id ? p : response.data ))
             setPersonsToDisplay(personsToDisplay.map(p => p.id !== originalPerson.id ? p : response.data ))
+            setNotificationColor("blue")
+            setNotificationText(`Successfully updated number for contact ${numberObject.name}`)
+            setTimeout(() => {
+              setNotificationText(null)
+            }, 5000)
           })
-        setNotificationColor("blue")
-        setNotificationText(`Successfully updated number for contact ${numberObject.name}`)
-        setTimeout(() => {
-          setNotificationText(null)
-        }, 5000)
+          .catch(errorMessage => {
+            setNotificationColor("red")
+            setNotificationText(`Contact ${numberObject.name} has already been deleted from the server!`)
+            setTimeout(() => {
+              setNotificationText(null)
+            }, 5000)  
+            setPersons(persons.filter(p => p.id !== originalPerson.id))
+            setPersonsToDisplay(personsToDisplay.filter(p => p.id !== originalPerson.id))
+          })
+
       }
       setNewName('');
       setNewNumber('');
