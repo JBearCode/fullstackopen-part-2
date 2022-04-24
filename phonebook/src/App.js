@@ -9,6 +9,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterBy, setFilterBy] = useState('')
   const [personsToDisplay, setPersonsToDisplay] = useState(persons)
+  const [notificationText, setNotificationText] = useState(null)
+  const [notificationColor, setNotificationColor] = useState('green')
 
   useEffect(() => {
     console.log('effect begins')
@@ -37,6 +39,11 @@ const App = () => {
             setPersons(persons.map(p => p.id !== originalPerson.id ? p : response.data ))
             setPersonsToDisplay(personsToDisplay.map(p => p.id !== originalPerson.id ? p : response.data ))
           })
+        setNotificationColor("blue")
+        setNotificationText(`Successfully updated number for contact ${numberObject.name}`)
+        setTimeout(() => {
+          setNotificationText(null)
+        }, 5000)
       }
       setNewName('');
       setNewNumber('');
@@ -47,7 +54,12 @@ const App = () => {
           console.log(response)
           setPersonsToDisplay(persons.concat(response.data))
           setPersons(persons.concat(response.data))        
-      })    
+      })
+      setNotificationColor("green")
+      setNotificationText(`Successfully created new contact ${numberObject.name}`)
+      setTimeout(() => {
+        setNotificationText(null)
+      }, 5000)    
       setNewName('');
       setNewNumber('');
     }
@@ -89,6 +101,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationText} notificationColor={notificationColor}/>
       <Filter filterBy={filterBy} onChange={handleFilterChange}/>
       <h2>Add Contact</h2>
       <Form newName={newName} 
@@ -137,6 +150,28 @@ const Filter = ({filterBy, onChange}) => {
       value={filterBy} 
       onChange={(e) => onChange(e.target.value)}
     /></div>
+  )
+}
+
+const Notification = ({ message, notificationColor }) => {
+  const styleObject = {
+    color: notificationColor,
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  }
+
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notification' style={styleObject}>
+      {message}
+    </div>
   )
 }
 
